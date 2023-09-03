@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: k8s-combat
+  name: k8s-combat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-combat
+  template:
+    metadata:
+      labels:
+        app: k8s-combat
+    spec:
+      containers:
+        - name: k8s-combat
+          image: crossoverjie/k8s-combat:v1
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: "1"
+              memory: 300Mi
+            requests:
+              cpu: "0.1"
+              memory: 30Mi

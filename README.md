@@ -98,7 +98,8 @@ docker:
 下一步便是整个过程中最重要的环节了，也是唯一和 k8s 打交道的地方，那就是编写 deployment。
 
 
-在之前的视频[《一分钟了解 k8s》](【一分钟带你了解 k8s】 https://www.bilibili.com/video/BV1Cm4y1n7yG/?share_source=copy_web&vd_source=358858ab808efe832b0dda9dbc4701da)中讲过常见的组件：
+在之前的视频[《一分钟了解 k8s》](【一分钟带你了解 k8s】 https://www.bilibili.com/video/BV1Cm4y1n7yG/?share_source=copy_web&vd_source=358858ab808efe832b0dda9dbc4701da)
+中讲过常见的组件：
 ![image.png](https://s2.loli.net/2023/09/04/hrOUSVsmP2KkNlC.png)
 
 其中我们最常见的就是 deployment，通常用于部署无状态应用；现在还不太需要了解其他的组件，先看看 deployment 如何编写：

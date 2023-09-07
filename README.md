@@ -374,7 +374,7 @@ Endpoints:         192.168.130.133:8081,192.168.130.29:8081
 
 ```shell
 k exec -it k8s-combat-7867bfb596-67p5m bash
-curl http://127.0.0./service
+curl http://127.0.0.1:8081/service
 ```
 
 并执行两次 `/service` 接口，发现请求会轮训进入 `k8s-combat-service` 的代理的 IP 中。

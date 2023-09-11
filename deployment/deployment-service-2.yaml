@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: k8s-combat-service-2 # 通过标签选择关联
+  name: k8s-combat-service-2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: k8s-combat-service-2
+  template:
+    metadata:
+      labels:
+        app: k8s-combat-service-2
+    spec:
+      containers:
+        - name: k8s-combat-service-2
+          image: crossoverjie/k8s-combat:v1
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: "1"
+              memory: 100Mi
+            requests:
+              cpu: "0.1"
+              memory: 10Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: k8s-combat-service-2
+spec:
+  selector:
+    app: k8s-combat-service-2 # 通过标签选择关联
+  type: ClusterIP
+  ports:
+    - port: 8081        # 本 Service 的端口
+      targetPort: 8081  # 容器端口
+      name: app

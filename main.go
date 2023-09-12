@@ -8,6 +8,10 @@ import (
 )
 
 func main() {
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		name, _ := os.Hostname()
+		fmt.Fprint(w, name)
+	})
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
 		name, _ := os.Hostname()
 		log.Printf("%s ping", name)

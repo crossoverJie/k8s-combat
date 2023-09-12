@@ -14,6 +14,13 @@ spec:
                 name: k8s-combat-service
                 port:
                   number: 8081
+          - path: /k8s-service/ping
+            pathType: Prefix
+            backend:
+              service:
+                name: k8s-combat-service
+                port:
+                  number: 8081
           - path: /k8s-service-2
             pathType: Prefix
             backend:

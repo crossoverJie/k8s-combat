@@ -3,7 +3,6 @@ kind: Ingress
 metadata:
   name: k8s-combat-ingress
 spec:
-  ingressClassName: nginx
   rules:
     - http:
         paths:
@@ -21,3 +20,4 @@ spec:
                 name: k8s-service-2
                 port:
                   number: 8081
+  ingressClassName: nginx

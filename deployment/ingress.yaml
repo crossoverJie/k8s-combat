@@ -2,8 +2,8 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: k8s-combat-ingress
-ingressClassName: nginx
 spec:
+  ingressClassName: nginx
   rules:
     - http:
         paths:

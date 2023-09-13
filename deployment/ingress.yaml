@@ -5,19 +5,23 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - http:
+    - host: www.service1.io
+      http:
         paths:
-          - path: /k8s-service
-            pathType: Prefix
-            backend:
+          - backend:
               service:
                 name: k8s-combat-service
                 port:
                   number: 8081
-          - path: /k8s-service-2
+            path: /
             pathType: Prefix
-            backend:
+    - host: www.service2.io
+      http:
+        paths:
+          - backend:
               service:
                 name: k8s-combat-service-2
                 port:
                   number: 8081
+            path: /
+            pathType: Prefix

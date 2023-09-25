@@ -11,7 +11,7 @@ func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		name, _ := os.Hostname()
 		url := os.Getenv("PG_URL")
-		pwd := os.Getenv("PWD")
+		pwd := os.Getenv("PG_PWD")
 		fmt.Fprint(w, fmt.Sprintf("%s-%s-%s", name, url, pwd))
 	})
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {

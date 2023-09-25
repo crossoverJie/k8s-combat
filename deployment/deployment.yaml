@@ -19,7 +19,7 @@ spec:
           image: crossoverjie/k8s-combat:v1
           imagePullPolicy: Always
           volumeMounts:
-            - name: kube-conf
+            - name: app
               mountPath: "/go/bin/app.yaml"
               subPath: APP
           envFrom:

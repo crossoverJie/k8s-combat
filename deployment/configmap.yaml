@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: k8s-combat-configmap
-data:
-  PG_URL: "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable"

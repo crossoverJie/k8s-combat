@@ -18,6 +18,10 @@ spec:
         - name: k8s-combat
           image: crossoverjie/k8s-combat:v1
           imagePullPolicy: Always
+          volumeMounts:
+            - name: kube-conf
+              mountPath: "/go/bin/app.yaml"
+              subPath: APP
           envFrom:
             - configMapRef:
                 name: k8s-combat-configmap
@@ -28,3 +32,20 @@ spec:
             requests:
               cpu: "0.1"
               memory: 100Mi
+      volumes:
+        - name: app
+          configMap:
+            name: k8s-combat-configmap
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: k8s-combat-configmap
+data:
+  PG_URL: "postgres://postgres:postgres@localhost:5432/postgres?sslmode=disable"
+  APP: |
+    name: k8s-combat
+    pulsar:
+      url: "pulsar://localhost:6650"
+      token: "abc"
+    

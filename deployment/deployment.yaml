@@ -21,7 +21,7 @@ spec:
           volumeMounts:
             - name: app
               mountPath: "/go/bin/app.yaml"
-              subPath: APP
+              subPath: PG_URL
           envFrom:
             - configMapRef:
                 name: k8s-combat-configmap

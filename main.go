@@ -10,7 +10,8 @@ import (
 func main() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		name, _ := os.Hostname()
-		fmt.Fprint(w, name)
+		url := os.Getenv("PG_URL")
+		fmt.Fprint(w, fmt.Sprintf("%s-%s", name, url))
 	})
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
 		name, _ := os.Hostname()

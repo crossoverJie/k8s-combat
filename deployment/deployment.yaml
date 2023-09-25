@@ -18,6 +18,9 @@ spec:
         - name: k8s-combat
           image: crossoverjie/k8s-combat:v1
           imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: k8s-combat-configmap
           resources:
             limits:
               cpu: "1"

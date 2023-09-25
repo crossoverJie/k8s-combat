@@ -25,6 +25,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: k8s-combat-configmap
+            - secretMapRef:
+                name: k8s-combat-secret
           resources:
             limits:
               cpu: "1"
@@ -48,4 +50,12 @@ data:
     pulsar:
       url: "pulsar://localhost:6650"
       token: "abc"
-    
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: k8s-combat-secret
+type: Opaque
+data:
+  PWD: YWJjCg==

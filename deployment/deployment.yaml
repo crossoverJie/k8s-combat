@@ -26,8 +26,6 @@ spec:
           envFrom:
             - configMapRef:
                 name: k8s-combat-configmap
-            - secretMapRef:
-                name: k8s-combat-secret
           env:
             - name: PG_PWD
               valueFrom:

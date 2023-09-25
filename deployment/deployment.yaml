@@ -22,11 +22,18 @@ spec:
             - name: app
               mountPath: "/go/bin/app.yaml"
               subPath: APP
+          # Define all the ConfigMap's data as container environment variables
           envFrom:
             - configMapRef:
                 name: k8s-combat-configmap
             - secretMapRef:
                 name: k8s-combat-secret
+          env:
+            - name: PG_PWD
+              valueFrom:
+                secretKeyRef:
+                  name: k8s-combat-secret
+                  key: PWD
           resources:
             limits:
               cpu: "1"

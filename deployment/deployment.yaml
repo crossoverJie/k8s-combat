@@ -21,6 +21,7 @@ spec:
           volumeMounts:
             - name: app
               mountPath: "/go/bin/app.yaml"
+              # configmap's key
               subPath: APP
           # Define all the ConfigMap's data as container environment variables
           envFrom:
@@ -42,6 +43,7 @@ spec:
       volumes:
         - name: app
           configMap:
+            # configmap's name
             name: k8s-combat-configmap
 ---
 apiVersion: v1

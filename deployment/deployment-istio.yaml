@@ -5,7 +5,7 @@ metadata:
     app: k8s-combat-service # 通过标签选择关联
   name: k8s-combat-service
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: k8s-combat-service

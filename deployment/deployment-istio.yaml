@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: k8s-combat-service
-          image: crossoverjie/k8s-combat:v1
+          image: crossoverjie/k8s-combat:istio
           imagePullPolicy: Always
           resources:
             limits:

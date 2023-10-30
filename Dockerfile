@@ -15,7 +15,7 @@ RUN go build
 
 # 第三阶段：部署
 FROM debian:stable-slim
-RUN apt-get update && apt-get install -y curl
+#RUN apt-get update && apt-get install -y curl
 COPY --from=builder /go/src/app/k8s-combat /go/bin/k8s-combat
 ENV PATH="/go/bin:${PATH}"
 

@@ -1,0 +1,151 @@
+# # deployment-v1
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: k8s-combat-service-v1
+  name: k8s-combat-service-v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-combat-service-v1
+  template:
+    metadata:
+      labels:
+        app: k8s-combat-service-v1
+        appId: "12345"
+    spec:
+      containers:
+        - name: k8s-combat-service-v1
+          image: crossoverjie/k8s-combat:istio
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: "1"
+              memory: 100Mi
+            requests:
+              cpu: "0.1"
+              memory: 10Mi
+          ports:
+            - containerPort: 8081
+
+
+---
+# deployment-v2
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: k8s-combat-service-v2
+  name: k8s-combat-service-v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-combat-service-v2
+  template:
+    metadata:
+      labels:
+        app: k8s-combat-service-v2
+        appId: "12345"
+    spec:
+      containers:
+        - name: k8s-combat-service-v2
+          image: crossoverjie/k8s-combat:istio
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: "1"
+              memory: 100Mi
+            requests:
+              cpu: "0.1"
+              memory: 10Mi
+          ports:
+            - containerPort: 8081
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: k8s-combat-service-istio-mesh
+spec:
+  selector:
+    appId: "12345"
+  type: ClusterIP
+  ports:
+    - port: 8081
+      targetPort: 8081
+      name: app
+    - name: grpc
+      port: 50051
+      targetPort: 50051
+      appProtocol: grpc
+
+---
+# wight rule
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: k8s-combat-service-ds
+spec:
+  host: k8s-combat-service-istio-mesh
+  subsets:
+    - name: v1
+      labels:
+        app: k8s-combat-service-v1
+    - name: v2
+      labels:
+        app: k8s-combat-service-v2
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: k8s-combat-service-vs
+spec:
+  gateways:
+    - mesh
+  hosts:
+    - k8s-combat-service-istio-mesh # match this host
+  http:
+    - match:
+        - uri:
+            exact: /helloworld.Greeter/SayHello
+      route:
+        - destination:
+            host: k8s-combat-service-istio-mesh
+            subset: v1
+          weight: 10
+        - destination:
+            host: k8s-combat-service-istio-mesh
+            subset: v2
+          weight: 90
+      timeout: 5000ms
+
+  # match version to other version
+#  http:
+#    - name: v1
+#      match:
+#        - headers:
+#            version:
+#              exact: '100'
+#      route:
+#        - destination:
+#            host: k8s-combat-service-istio-mesh
+#            subset: v1
+#    - name: v2
+#      match:
+#        - headers:
+#            version:
+#              exact: '200'
+#      route:
+#        - destination:
+#            host: k8s-combat-service-istio-mesh
+#            subset: v2
+#    - name: default
+#      route:
+#        - destination:
+#            host: k8s-combat-service-istio-mesh
+#            subset: v1

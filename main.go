@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 	pb "k8s-combat/api/google.golang.org/grpc/examples/helloworld/helloworld"
 	"log"
 	"net"
@@ -47,10 +48,15 @@ func main() {
 			}
 			c = pb.NewGreeterClient(conn)
 		})
+		version := r.URL.Query().Get("version")
 
 		// Contact the server and print out its response.
 		name := "world"
 		ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+		md := metadata.New(map[string]string{
+			"version": version,
+		})
+		ctx = metadata.NewOutgoingContext(ctx, md)
 		defer cancel()
 		g, err := c.SayHello(ctx, &pb.HelloRequest{Name: name})
 		if err != nil {
@@ -82,7 +88,12 @@ type server struct {
 
 // SayHello implements helloworld.GreeterServer
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
-	log.Printf("Received: %v", in.GetName())
+	md, ok := metadata.FromIncomingContext(ctx)
+	var version string
+	if ok {
+		version = md.Get("version")[0]
+	}
+	log.Printf("Received: %v, version: %s", in.GetName(), version)
 	name, _ := os.Hostname()
-	return &pb.HelloReply{Message: fmt.Sprintf("hostname:%s, in:%s", name, in.Name)}, nil
+	return &pb.HelloReply{Message: fmt.Sprintf("hostname:%s, in:%s, version:%s", name, in.Name, version)}, nil
 }

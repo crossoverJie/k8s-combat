@@ -117,11 +117,11 @@ spec:
         - destination:
             host: k8s-combat-service-istio-mesh
             subset: v1
-          weight: 0
+          weight: 10
         - destination:
             host: k8s-combat-service-istio-mesh
             subset: v2
-          weight: 100
+          weight: 90
       timeout: 5000ms
 
   # match version to other version

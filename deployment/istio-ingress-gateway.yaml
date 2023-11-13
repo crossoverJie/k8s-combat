@@ -1,0 +1,52 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: istio-ingress-gateway
+  namespace: default
+spec:
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - 'www.service1.io'
+  selector:
+    app: istio-ingressgateway
+    istio: ingressgateway
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: combat-istio-http-vs
+spec:
+  gateways:
+    - istio-ingress-gateway
+  hosts:
+    - www.service1.io
+  # match version to other version
+  http:
+    - name: v1
+      match:
+        - headers:
+            version:
+              exact: '100'
+      route:
+        - destination:
+            host: www.service1.io
+            subset: v1
+    - name: v2
+      match:
+        - headers:
+            version:
+              exact: '200'
+      route:
+        - destination:
+            host: www.service1.io
+            subset: v2
+    - name: default
+      route:
+        - destination:
+            host: www.service1.io
+            subset: v1

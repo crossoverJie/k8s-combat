@@ -34,7 +34,7 @@ spec:
               exact: '100'
       route:
         - destination:
-            host: www.service1.io
+            host: k8s-combat-service-istio-mesh
             subset: v1
     - name: v2
       match:
@@ -43,10 +43,10 @@ spec:
               exact: '200'
       route:
         - destination:
-            host: www.service1.io
+            host: k8s-combat-service-istio-mesh
             subset: v2
     - name: default
       route:
         - destination:
-            host: www.service1.io
+            host: k8s-combat-service-istio-mesh
             subset: v1

@@ -51,4 +51,4 @@ spec:
             host: k8s-combat-service-istio-mesh
             port:
               number: 8081
-#            subset: v1
+            subset: v1

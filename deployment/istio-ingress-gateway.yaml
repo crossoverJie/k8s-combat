@@ -12,7 +12,7 @@ spec:
       hosts:
         - 'www.service1.io'
   selector:
-    app: istio-ingressgateway
+    app: istio-ingressgateway #与现有的 gateway 关联
     istio: ingressgateway
 
 ---

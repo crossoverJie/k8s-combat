@@ -16,7 +16,7 @@
 因为 k8s 部分功能其实是偏运维的，对研发来说优先级并不太高；
 所以我不太会涉及一些 k8s 运维的知识点，比如安装、组件等模块；主要以我们日常开发会使用到的组件为主。
 
-![image.png](https://s2.loli.net/2023/09/02/BtYcF6jp8u3nzJs.png)
+![](https://s2.loli.net/2023/11/25/aG8djFcgHse1ykb.png)
 
 
 # 入门

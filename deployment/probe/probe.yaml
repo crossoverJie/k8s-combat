@@ -60,6 +60,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: k8s-combat-service
+  namespace: probe
 spec:
   selector:
     app: k8s-combat-service # 通过标签选择关联

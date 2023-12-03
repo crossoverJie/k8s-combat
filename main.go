@@ -10,7 +10,9 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"os/signal"
 	"sync"
+	"syscall"
 	"time"
 )
 
@@ -77,6 +79,13 @@ func main() {
 		} else {
 			log.Printf("served on %s \n", port)
 		}
+	}()
+	quit := make(chan os.Signal)
+	signal.Notify(quit, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT, syscall.SIGPIPE)
+	go func() {
+		<-quit
+		log.Printf("quit signal received, exit \n")
+		os.Exit(0)
 	}()
 	http.ListenAndServe(":8081", nil)
 }

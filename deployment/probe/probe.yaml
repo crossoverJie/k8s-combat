@@ -10,6 +10,11 @@ spec:
   selector:
     matchLabels:
       app: k8s-combat-service
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
   template:
     metadata:
       labels:

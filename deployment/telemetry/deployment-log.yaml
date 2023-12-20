@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: k8s-combat
+  name: k8s-combat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: k8s-combat
+  template:
+    metadata:
+      labels:
+        app: k8s-combat
+    spec:
+      containers:
+        - name: k8s-combat
+          image: crossoverjie/k8s-combat:log
+          imagePullPolicy: Always
+          resources:
+            limits:
+              cpu: "1"
+              memory: 100Mi
+            requests:
+              cpu: "0.1"
+              memory: 100Mi
+        - args:
+            - -c
+            - /etc/filebeat/filebeat.yml
+            - -e
+          image: elastic/filebeat:8.11.3
+          imagePullPolicy: IfNotPresent
+          name: log-beat
+          resources:
+            limits:
+              cpu: 500m
+              memory: 256Mi
+            requests:
+              cpu: 1m
+              memory: 64Mi
+          securityContext:
+            runAsUser: 0
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /home/admin/logs
+              name: logs
+              readOnly: true
+            - mountPath: /etc/filebeat/
+              name: log-config
+              readOnly: true
+      volumes:
+        - emptyDir: {}
+          name: logs
+        - configMap:
+            defaultMode: 416
+            name: biz-log-k8s-combat
+          name: log-config
+
+
+---
+apiVersion: v1
+data:
+  filebeat.yml: |-
+    setup.template.enabled: false
+    setup.ilm.enabled: false
+
+    filebeat.inputs:
+      - type: container
+        paths:
+          - '/var/log/containers/*.log'
+        max_bytes: 20480
+        json.keys_under_root: true
+        json.overwrite_keys: true
+        ignore_decoding_error: true
+
+
+    output.elasticsearch:
+      hosts: ["http://elasticsearch:9200"]
+      username: "elastic"
+      password: "y9=gMoRL88squ3nHuC1V"
+kind: ConfigMap
+metadata:
+  name: biz-log-k8s-combat

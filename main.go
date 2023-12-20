@@ -3,10 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/rs/zerolog/log"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 	pb "k8s-combat/api/google.golang.org/grpc/examples/helloworld/helloworld"
-	"log"
 	"net"
 	"net/http"
 	"os"
@@ -25,13 +25,14 @@ func main() {
 	})
 	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
 		name, _ := os.Hostname()
-		log.Printf("%s ping", name)
+		log.Info().Msgf("%s ping", name)
+		fmt.Sprintf("%s ping====", name)
 		fmt.Fprint(w, "pong")
 	})
 	http.HandleFunc("/service", func(w http.ResponseWriter, r *http.Request) {
 		resp, err := http.Get("http://k8s-combat-service:8081/ping")
 		if err != nil {
-			log.Println(err)
+			log.Err(err).Msg("get http://k8s-combat-service:8081/ping error")
 			fmt.Fprint(w, err)
 			return
 		}
@@ -46,7 +47,7 @@ func main() {
 			service := r.URL.Query().Get("name")
 			conn, err := grpc.Dial(fmt.Sprintf("%s:50051", service), grpc.WithInsecure(), grpc.WithBlock())
 			if err != nil {
-				log.Fatalf("did not connect: %v", err)
+				log.Fatal().Msgf("did not connect: %v", err)
 			}
 			c = pb.NewGreeterClient(conn)
 		})
@@ -62,7 +63,7 @@ func main() {
 		defer cancel()
 		g, err := c.SayHello(ctx, &pb.HelloRequest{Name: name})
 		if err != nil {
-			log.Fatalf("could not greet: %v", err)
+			log.Fatal().Msgf("could not greet: %v", err)
 		}
 		fmt.Fprint(w, fmt.Sprintf("Greeting: %s", g.GetMessage()))
 	})
@@ -70,12 +71,12 @@ func main() {
 		var port = ":50051"
 		lis, err := net.Listen("tcp", port)
 		if err != nil {
-			log.Fatalf("failed to listen: %v", err)
+			log.Fatal().Msgf("failed to listen: %v", err)
 		}
 		s := grpc.NewServer()
 		pb.RegisterGreeterServer(s, &server{})
 		if err := s.Serve(lis); err != nil {
-			log.Fatalf("failed to serve: %v", err)
+			log.Fatal().Msgf("failed to serve: %v", err)
 		} else {
 			log.Printf("served on %s \n", port)
 		}

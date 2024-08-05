@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/rs/zerolog/log"
 	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -92,14 +93,24 @@ func main() {
 		}
 	}()
 
-	//mp := initMeterProvider()
-	//defer func() {
-	//	if err := mp.Shutdown(context.Background()); err != nil {
-	//		log.Printf("Error shutting down meter provider: %v", err)
-	//	}
-	//}()
+	mp := initMeterProvider()
+	defer func() {
+		if err := mp.Shutdown(context.Background()); err != nil {
+			log.Printf("Error shutting down meter provider: %v", err)
+		}
+	}()
 
 	err := runtime.Start(runtime.WithMinimumReadMemStatsInterval(time.Second))
+	if err != nil {
+		log.Err(err)
+	}
+
+	var meter = otel.Meter("test.io/k8s/combat")
+	apiCounter, err = meter.Int64Counter(
+		"api.counter",
+		metric.WithDescription("Number of API calls."),
+		metric.WithUnit("{call}"),
+	)
 	if err != nil {
 		log.Err(err)
 	}
@@ -143,6 +154,7 @@ type server struct {
 
 // SayHello implements helloworld.GreeterServer
 func (s *server) SayHello(ctx context.Context, in *pb.HelloRequest) (*pb.HelloReply, error) {
+	defer apiCounter.Add(ctx, 1)
 	md, _ := metadata.FromIncomingContext(ctx)
 	log.Printf("Received: %v, md: %v", in.GetName(), md)
 	name, _ := os.Hostname()
@@ -162,6 +174,8 @@ func (s *server) span(ctx context.Context) {
 var tracer trace.Tracer
 var resource *sdkresource.Resource
 var initResourcesOnce sync.Once
+
+var apiCounter metric.Int64Counter
 
 func initResource() *sdkresource.Resource {
 	initResourcesOnce.Do(func() {

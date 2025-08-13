@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/metric"
@@ -23,6 +24,8 @@ import (
 	sdkmetric "go.opentelemetry.io/otel/sdk/metric"
 	sdkresource "go.opentelemetry.io/otel/sdk/resource"
 	sdktrace "go.opentelemetry.io/otel/sdk/trace"
+
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 
 	"net"
 	"net/http"
@@ -83,6 +86,11 @@ func main() {
 			log.Fatal().Msgf("could not greet: %v", err)
 		}
 		fmt.Fprint(w, fmt.Sprintf("Greeting: %s", g.GetMessage()))
+	})
+	http.HandleFunc("/gin_server", func(w http.ResponseWriter, r *http.Request) {
+		g := gin.New()
+		g.Use(otelgin.Middleware("gin-server"))
+		fmt.Fprint(w, "gin server")
 	})
 
 	// Init OpenTelemetry start

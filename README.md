@@ -522,6 +522,7 @@ http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 ```
 
 > 我测试所使用的 k8s 部署在我家里一台限制的 Mac 上，所以这里的 IP 它的地址。
+> 如果你用的是minikube，可以在新终端上运行 minikube tunnel ，这样就可以通过 kubectl -n ingress-nginx get svc 看到 EXTERNAL-IP 了。
 
 
 当我们反复请求两次这个接口，会拿到两个不同的 hostname，也就是将我们的请求轮训负载到了这两个 service 所代理的两个 Pod 中。
